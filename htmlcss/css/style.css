@@ -1,0 +1,31 @@
+body {
+	font-family: Arial;
+}
+h1 {
+	color: #FF776B;
+}
+a {
+	font-size: 20px;
+}
+img {
+	padding: 20px;
+	border: solid 1px #AABBCC;
+}
+
+h2 {
+	color: green;
+}
+
+.manaklase {
+	text-decoration: underline;
+}
+
+.bilde {
+	padding: 20px; 
+	border:solid 1px #BBAACC; 
+	margin: 20px; 
+}
+
+.firstparagraph {
+	margin-bottom: 80px;
+}

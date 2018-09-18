@@ -1,0 +1,31 @@
+1 - aa Izdarits: IR
+2 - Sodien jaaiziet uz veikalu. Izdarits: IR
+3 - GALDS NAV NOPIRKTS Izdarits: NAV
+
+
+CSV
+aa,IR
+Sodien jaaiziet uz veikalu,IR
+GALDS NAV NOPIRKTS,NAV
+
+POSITIONED
+aa                                      IR
+Sodien jaaiziet uz veikalu              IR
+GALDS NAV NOPIRKTS                      NAV
+
+XML
+<darbs>
+ <nosaukums>aa</nosaukums>
+ <statuss>IR</statuss>
+</darbs>
+<darbs>
+ <nosaukums>Sodien jaaiziet uz veikalu</nosaukums>
+ <statuss>IR</statuss>
+</darbs>
+<darbs>
+ <nosaukums>GALDS NAV NOPIRKTS</nosaukums>
+ <statuss>NAV</statuss>
+</darbs>
+
+JSON
+[{"nosaukums": "aa", statuss: "IR"}, {"nosaukums": "Sodien jaaiziet uz veikalu", statuss: "IR"}]

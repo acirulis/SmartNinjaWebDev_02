@@ -8,6 +8,7 @@ def print_menu():
     print('[2] - Add new task')
     print('[3] - Delete all tasks')
     print('[4] - Quit (and write to file)')
+    print('[5] - Delete single item')
     return True # nav obligāti atgriezt True, bet tā ir laba prakse
 
 # nolasam tasku saturu no faila
@@ -45,9 +46,12 @@ def add_new_task(tasks, task_title, task_status):
     tasks.append(task)
 
 #visu tasku saraksta izvadīšana uz ekrāna
-def list_all_tasks(tasks):
-    for task in tasks:
-        print('\nTASK')
+def list_all_tasks(tasks, numbered = False):
+    for i, task in enumerate(tasks):
+        if numbered:
+            print('\nTASK: %s' % (i+1))
+        else:
+            print('\nTASK')
         print('Title: %s ' % task['title'])
         print('Status: %s ' % task['status'])
     return True
@@ -56,6 +60,10 @@ def list_all_tasks(tasks):
 def remove_all_tasks(filename):
     os.remove(filename)
     return []
+
+def delete_task(task_number):
+    del(tasks[task_number-1]) # -1 lai atbilstu numeracijai saraksta
+    return True
 
 # MAIN PROGRAM STARTS HERE
 # Visa aplikācija ir sadalīta vairākās funkcijās (metodēs), lai nodrošinātu ērtāku pārskatāmību
@@ -83,5 +91,10 @@ while True:
         add_new_task(tasks, task_title, task_status.lower()) #nododam kā parametru statusu, vienlaicīgi to uztaisot par mazo burtu.
     if action == '3':
         tasks = remove_all_tasks(FILE_NAME)
+    if action == '5':
+        list_all_tasks(tasks, numbered=True)
+        task_to_delete = input('Please enter task number: ')
+        task_to_delete = int(task_to_delete) # parversam uz INT
+        delete_task(task_to_delete)
 
 print('\nGood bye!')

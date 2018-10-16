@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block page_content %}
+
+    <h1>Form page - lapa, kas nosūta datus serverim</h1>
+    <form method="post" action="/form" >
+        <label for="ievaddati">Dati(teksts): </label>
+        <input type="text" name="ievaddati" /><br />
+        <label for="skaitlis">Skaitlis: </label>
+        <input type="text" name="skaitlis" /><br />
+        <input type="submit" name="submit" value="Sūtīt" />
+    </form>
+<hr>
+{% if ir_dati %}
+Lietotājs ievadīja: <b>{{dati}}</b><br />
+Skaitļa <b>{{skaitlis}}</b> kvadrāts ir <b>{{kvadrats}}</b>
+{% endif %}
+
+{% endblock page_content %}

@@ -3,3 +3,13 @@ body {
     margin: 0 30px;
     background-color: azure;
 }
+
+input {
+    margin: 4px 0;
+}
+
+.nav li {
+    display: inline-block;
+    width: 150px;
+    background-color: white;
+}

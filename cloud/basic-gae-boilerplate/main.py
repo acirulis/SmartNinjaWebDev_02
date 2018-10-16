@@ -47,8 +47,30 @@ class AboutHandler(BaseHandler):
         }
         return self.render_template('about.html', params)
 
+class FormHandler(BaseHandler):
+    def get(self):
+        params = {
+            'page_title': 'Forma'
+        }
+        return self.render_template('form.html', params)
+    def post(self):
+        skaitlis = self.request.get('skaitlis')
+        kvadrats = int(skaitlis)**2
+        if skaitlis.isdigit():
+            kvadrats = int(skaitlis)**2
+        else:
+            kvadrats = 0
+        params = {
+            'page_title': 'Forma',
+            'ir_dati': True,
+            'dati': self.request.get('ievaddati'),
+            'skaitlis': skaitlis,
+            'kvadrats': kvadrats,
+        }
+        return self.render_template('form.html', params)
 
 app = webapp2.WSGIApplication([
     webapp2.Route('/', MainHandler),
-    webapp2.Route('/about', AboutHandler)
+    webapp2.Route('/about', AboutHandler),
+    webapp2.Route('/form', FormHandler)
 ], debug=True)

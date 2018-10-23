@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block page_content %}
+    <h1>Database</h1>
+
+{% if status %}
+<span style="color: Red;">{{status}}</span>
+{% endif %}
+
+<form method="post">
+    <label for="message_text">Message text: </label>
+    <input type="text" name="message_text" id="message_text"/>
+    <label for="message_notes">Message notes: </label>
+    <input type="text" name="message_notes" id="message_notes"/>
+    <input type="submit" value="Save!" />
+
+</form>
+
+<hr>
+
+<h2>Data</h2>
+
+{% for message in messages %}
+<div class="message">
+    <span class="meta">{{message.created}}</span><br />
+    <strong>{{message.message_text}}</strong>: {{message.message_notes}}<br />
+    <span class="meta">{{ message.key.id() }}</span>
+</div>
+{% endfor %}
+
+{% endblock page_content %}

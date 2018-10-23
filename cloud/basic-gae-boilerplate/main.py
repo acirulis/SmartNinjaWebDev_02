@@ -47,6 +47,31 @@ class AboutHandler(BaseHandler):
         }
         return self.render_template('about.html', params)
 
+class DatabaseHandler(BaseHandler):
+    def get(self):
+        params = {
+            'page_title': 'Database'
+        }
+        from models import Message
+        messages = Message.query().order(-Message.created).fetch()
+        params["messages"] = messages
+        return self.render_template('database.html', params)
+
+    def post(self):
+        from models import Message
+        msg_text = self.request.get("message_text")
+        msg_notes = self.request.get("message_notes")
+        msg = Message(message_text=msg_text, message_notes=msg_notes)
+        msg.put()
+        messages = Message.query().fetch()
+        params = {
+            'page_title': 'Database',
+            'status': 'Added!',
+            'messages': messages,
+        }
+        return self.render_template('database.html', params)
+
+
 class FormHandler(BaseHandler):
     def get(self):
         params = {
@@ -72,5 +97,6 @@ class FormHandler(BaseHandler):
 app = webapp2.WSGIApplication([
     webapp2.Route('/', MainHandler),
     webapp2.Route('/about', AboutHandler),
-    webapp2.Route('/form', FormHandler)
+    webapp2.Route('/form', FormHandler),
+    webapp2.Route('/database', DatabaseHandler),
 ], debug=True)

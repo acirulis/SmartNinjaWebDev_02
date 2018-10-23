@@ -13,3 +13,12 @@ input {
     width: 150px;
     background-color: white;
 }
+
+.message {
+    border: solid 1px darkmagenta;
+    margin: 8px;
+    padding: 8px;
+}
+.message .meta {
+    font-size: 10px;
+}

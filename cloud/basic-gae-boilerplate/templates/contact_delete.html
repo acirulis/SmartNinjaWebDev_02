@@ -2,7 +2,7 @@
 
 {% block page_content %}
 
-<h1>Do you really want to delete this message?</h1>
+<h1>Do you really want to delete this contact?</h1>
 
     <form action="/contacts/delete/{{ contact.key.id() }}" method="post">
         <button type="submit">YES, delete!</button>

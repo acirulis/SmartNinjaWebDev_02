@@ -4,6 +4,7 @@ from __future__ import \
 import webapp2
 import os
 import jinja2
+from models import Contact
 
 # ja problēmas ar jinja2 bibliotēku python instalācijā
 # c:\Users\andis\AppData\Local\Google\Cloud SDK\google-cloud-sdk\platform\bundledpython>python -m pip install jinja2 --target=Lib
@@ -70,8 +71,8 @@ class DatabaseHandler(BaseHandler):
         skaitlis = self.request.get("skaitlis")
         if skaitlis.isdigit():
             skaitlis = int(skaitlis)
-            msg = Message(message_text=msg_text, message_notes=msg_notes, email=email, skaitlis=skaitlis)
-            msg.put()
+            row = Message(message_text=msg_text, message_notes=msg_notes, email=email, skaitlis=skaitlis)
+            row.put()
             status = 'Addded successfully!'
         else:
             status = 'Please enter number!'
@@ -107,19 +108,16 @@ class FormHandler(BaseHandler):
         return self.render_template('form.html', params)
 
 
-from models import Contacts
-
-
 class ContactsHandler(BaseHandler):
     def get(self, contact_id=None):
         params = {
             'page_title': 'Contacts'
         }
         if contact_id:
-            contact = Contacts.get_by_id(int(contact_id))
+            contact = Contact.get_by_id(int(contact_id))
         else:
             contact = None
-        contacts = Contacts.query().order(-Contacts.created).fetch()
+        contacts = Contact.query().order(-Contact.created).fetch()
         params["contacts"] = contacts
         params["contact"] = contact
         return self.render_template('contacts.html', params)
@@ -129,24 +127,39 @@ class ContactsHandler(BaseHandler):
         last_name = self.request.get("last_name")
         email = self.request.get("email")
         if contact_id:
-            msg = Contacts.get_by_id(int(contact_id))
+            msg = Contact.get_by_id(int(contact_id))
             msg.first_name = first_name
             msg.last_name = last_name
             msg.email = email
         else:
-            msg = Contacts(first_name=first_name, last_name=last_name, email=email)
+            msg = Contact(first_name=first_name, last_name=last_name, email=email)
         msg.put()
         return self.redirect_to("contacts")
 
 
+class EmailHandler(BaseHandler):
+    def get(self):
+        from google.appengine.api import mail
+        message = mail.EmailMessage(
+            sender='andis.cirulis@gmail.com',
+            subject="Your account has been approved")
+
+        message.to = "andis.cirulis@whitedigital.eu"
+        message.body = """Dear Albert:
+        Your example.com account has been approved.  You can now visit
+        http://www.example.com/ and sign in using your Google Account to
+        """
+        message.send()
+
+
 class ContactDeleteHandler(BaseHandler):
     def get(self, contact_id):
-        contact = Contacts.get_by_id(int(contact_id))
+        contact = Contact.get_by_id(int(contact_id))
         params = {"contact": contact}
         return self.render_template("contact_delete.html", params=params)
 
     def post(self, contact_id):
-        contact = Contacts.get_by_id(int(contact_id))
+        contact = Contact.get_by_id(int(contact_id))
         contact.key.delete()
         return self.redirect_to('contacts')
 
@@ -159,4 +172,5 @@ app = webapp2.WSGIApplication([
     webapp2.Route('/contacts', ContactsHandler, name="contacts"),
     webapp2.Route('/contacts/<contact_id:\d+>', ContactsHandler),
     webapp2.Route('/contacts/delete/<contact_id:\d+>', ContactDeleteHandler),
+    webapp2.Route('/sendmail', EmailHandler),
 ], debug=True)

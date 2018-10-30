@@ -9,7 +9,7 @@ class Message(ndb.Model):
     skaitlis = ndb.IntegerProperty()
 
 
-class Contacts(ndb.Model):
+class Contact(ndb.Model):
     created = ndb.DateTimeProperty(auto_now_add=True)
     first_name = ndb.StringProperty()
     last_name = ndb.StringProperty()

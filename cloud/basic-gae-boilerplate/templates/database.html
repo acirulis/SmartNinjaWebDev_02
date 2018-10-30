@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block page_content %}
-    <h1>Database</h1>
+<h1>Database</h1>
 
 {% if status %}
 <span style="color: Red;">{{status}}</span>
@@ -9,10 +9,15 @@
 
 <form method="post">
     <label for="message_text">Message text: </label>
-    <input type="text" name="message_text" id="message_text"/>
+    <input type="text" name="message_text" id="message_text"/><br/>
     <label for="message_notes">Message notes: </label>
-    <input type="text" name="message_notes" id="message_notes"/>
-    <input type="submit" value="Save!" />
+    <input type="text" name="message_notes" id="message_notes"/><br/>
+    <label for="email">Email: </label>
+    <input type="text" name="email" id="email"/><br/>
+    <label for="skaitlis">Skaitlis: </label>
+    <input type="text" name="skaitlis" id="skaitlis"/><br/>
+
+    <input type="submit" value="Save!"/>
 
 </form>
 
@@ -22,8 +27,8 @@
 
 {% for message in messages %}
 <div class="message">
-    <span class="meta">{{message.created}}</span><br />
-    <strong>{{message.message_text}}</strong>: {{message.message_notes}}<br />
+    <span class="meta">{{message.created}}</span><br/>
+    {{message.skaitlis}} <strong>{{message.message_text}}</strong>: {{message.message_notes}}<br/>
     <span class="meta">{{ message.key.id() }}</span>
 </div>
 {% endfor %}

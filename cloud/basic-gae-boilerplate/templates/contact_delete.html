@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block page_content %}
+
+<h1>Do you really want to delete this message?</h1>
+
+    <form action="/contacts/delete/{{ contact.key.id() }}" method="post">
+        <button type="submit">YES, delete!</button>
+    </form>
+
+{% endblock page_content %}

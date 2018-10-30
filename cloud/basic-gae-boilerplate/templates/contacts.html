@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block page_content %}
+<h1>CONTACTS</h1>
+<form method="post">
+    <label for="first_name">First name: </label>
+    <input type="text" name="first_name" id="first_name" value="{{contact.first_name}}"/><br/>
+    <label for="last_name">Last name: </label>
+    <input type="text" name="last_name" id="last_name" value="{{contact.last_name}}"/><br/>
+    <label for="email">Email: </label>
+    <input type="text" name="email" id="email" value="{{contact.email}}"/><br/>
+    <input type="submit" value="Save!"/>
+
+</form>
+<hr>
+<h2>Contacts</h2>
+<table border="1">
+    <tr>
+        <td>Created</td>
+        <td>First name</td>
+        <td>Last name</td>
+        <td>Email</td>
+        <td>Actions</td>
+    </tr>
+    {% for contact in contacts %}
+    <tr>
+        <td>{{contact.created}}</td>
+        <td>{{contact.first_name}}</td>
+        <td>{{contact.last_name}}</td>
+        <td>{{contact.email}}</td>
+        <td><a href="/contacts/{{contact.key.id()}}">[EDIT]</a> <a
+                href="/contacts/delete/{{contact.key.id()}}">[DELETE]</a></td>
+    </tr>
+    </div>
+    {% endfor %}
+
+</table>
+{% endblock page_content %}

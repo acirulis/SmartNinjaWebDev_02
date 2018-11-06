@@ -13,6 +13,7 @@
 </form>
 <hr/>
 <h2>Contacts</h2>
+{% if allow_database %}
 <table border="1">
     <tr>
         <td>Created</td>
@@ -28,9 +29,14 @@
         <td>{{contact.last_name}}</td>
         <td>{{contact.email}}</td>
         <td><a href="/contacts/{{contact.key.id()}}">[EDIT]</a> <a
-                href="/contacts/delete/{{contact.key.id()}}">[DELETE]</a></td>
+                href="/contacts/delete/{{contact.key.id()}}">[Dzēst]</a></td>
     </tr>
     {% endfor %}
 
 </table>
+
+{% else %}
+ <span style="color: red">Please log in!</span>
+{% endif %}
+
 {% endblock page_content %}

@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
-from __future__ import \
-    unicode_literals  # pirmās divas rindiņas vajadzīgas lai Python2 + webapp2 atbalstītu latviešu burtis
+# from __future__ import \
+#     unicode_literals  # pirmās divas rindiņas vajadzīgas lai Python2 + webapp2 atbalstītu latviešu burtis
 import webapp2
 import os
 import jinja2
 from models import Contact
+from webapp2_extras import sessions
+import hmac
 
 # ja problēmas ar jinja2 bibliotēku python instalācijā
 # c:\Users\andis\AppData\Local\Google\Cloud SDK\google-cloud-sdk\platform\bundledpython>python -m pip install jinja2 --target=Lib
@@ -27,8 +29,31 @@ class BaseHandler(webapp2.RequestHandler):
     def render_template(self, view_filename, params=None):
         if not params:
             params = {}
+        params['logged_in'] = self.session.get('logged_in')
         template = jinja_env.get_template(view_filename)
         self.response.out.write(template.render(params))
+
+    def dispatch(self):
+        # Get a session store for this request.
+        self.session_store = sessions.get_store(request=self.request)
+
+        try:
+            # Dispatch the request.
+            webapp2.RequestHandler.dispatch(self)
+        finally:
+            # Save all sessions.
+            self.session_store.save_sessions(self.response)
+
+    @webapp2.cached_property
+    def session(self):
+        # Returns a session using the default cookie key.
+        return self.session_store.get_session()
+
+
+config = {}
+config['webapp2_extras.sessions'] = {
+    'secret_key': 'my-super-secret-key',
+}
 
 
 class MainHandler(BaseHandler):
@@ -40,7 +65,7 @@ class MainHandler(BaseHandler):
         params = {
             'name': "Andis",
             'saraksts': list,
-            'page_title': 'Sākums',
+            'page_title': 'Sakums',
         }
         return self.render_template('index.html', params)
 
@@ -61,6 +86,7 @@ class DatabaseHandler(BaseHandler):
         from models import Message
         messages = Message.query().order(-Message.created).fetch()
         params["messages"] = messages
+        params['session'] = self.session.get('foo')
         return self.render_template('database.html', params)
 
     def post(self):
@@ -113,6 +139,14 @@ class ContactsHandler(BaseHandler):
         params = {
             'page_title': 'Contacts'
         }
+
+
+        # parbaudam, vai esam logged in
+        if self.session.get('logged_in'):
+            allow_database = True
+        else:
+            allow_database = False
+
         if contact_id:
             contact = Contact.get_by_id(int(contact_id))
         else:
@@ -120,6 +154,7 @@ class ContactsHandler(BaseHandler):
         contacts = Contact.query().order(-Contact.created).fetch()
         params["contacts"] = contacts
         params["contact"] = contact
+        params['allow_database'] = allow_database
         return self.render_template('contacts.html', params)
 
     def post(self, contact_id=None):
@@ -163,6 +198,27 @@ class ContactDeleteHandler(BaseHandler):
         contact.key.delete()
         return self.redirect_to('contacts')
 
+class LoginHandler(BaseHandler):
+    def get(self):
+        return self.render_template('login.html')
+    def post(self):
+        username = self.request.get('username')
+        password = self.request.get('password')
+        hash = hmac.new(str(password)).hexdigest()
+
+        if username == 'andis' and hash == 'f7336ed97ecd419f38d5bca6495bc2c7':
+            self.session['logged_in'] = True
+            return self.redirect_to('contacts')
+        else:
+            params = {}
+            params['incorrect_login'] = True
+            return self.render_template('login.html', params)
+
+class LogoutHandler(BaseHandler):
+    def get(self):
+        self.session['logged_in'] = False
+        return self.redirect('contacts')
+
 
 app = webapp2.WSGIApplication([
     webapp2.Route('/', MainHandler),
@@ -173,4 +229,6 @@ app = webapp2.WSGIApplication([
     webapp2.Route('/contacts/<contact_id:\d+>', ContactsHandler),
     webapp2.Route('/contacts/delete/<contact_id:\d+>', ContactDeleteHandler),
     webapp2.Route('/sendmail', EmailHandler),
-], debug=True)
+    webapp2.Route('/login', LoginHandler),
+    webapp2.Route('/logout', LogoutHandler),
+], debug=True, config=config)

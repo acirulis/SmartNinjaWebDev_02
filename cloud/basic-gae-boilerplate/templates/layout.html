@@ -12,6 +12,11 @@
     <li><a href="/form">Form</a></li>
     <li><a href="/database">Database</a></li>
     <li><a href="/contacts">Contacts</a></li>
+    {% if logged_in %}
+    <li><a href="/logout">Logout</a></li>
+    {% else %}
+    <li><a href="/login">Login</a></li>
+    {% endif %}
 </ul>
     {% block page_content %}
     {% endblock page_content %}
